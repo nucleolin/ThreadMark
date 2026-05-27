@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>存脆 ThreadMark — 尼爾森十原則評估清單</title>
+<style>
+  :root {
+    --bg: #FAFAFA;
+    --paper: #FFFFFF;
+    --ph: #F0F0F0;
+    --line: #D4D4D4;
+    --ink: #2A2A2A;
+    --ink-2: #555555;
+    --mute: #888888;
+    --accent: #2A2A2A;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.55;
+  }
+  .doc { max-width: 920px; margin: 0 auto; padding: 56px 48px 120px; }
+
+  /* === Header / cover === */
+  .cover {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 28px;
+    margin-bottom: 36px;
+  }
+  .eyebrow {
+    font-family: "SF Mono", ui-monospace, Menlo, monospace;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--mute); margin: 0 0 10px;
+  }
+  h1 {
+    font-size: 30px; font-weight: 700;
+    margin: 0 0 6px; letter-spacing: -0.01em;
+  }
+  h1 .en {
+    color: var(--ink-2); font-weight: 500; font-size: 20px; margin-left: 10px;
+  }
+  .cover-meta {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    font-size: 12px;
+  }
+  .cover-meta .cell {
+    border: 1px solid var(--line);
+    background: var(--paper);
+    padding: 10px 12px;
+    border-radius: 4px;
+  }
+  .cover-meta .lbl {
+    font-family: "SF Mono", monospace; font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--mute); margin-bottom: 4px;
+  }
+  .cover-meta .val { color: var(--ink); font-weight: 500; }
+
+  /* === Section heads === */
+  h2.sec {
+    font-family: "SF Mono", monospace;
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink);
+    margin: 56px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  h2.sec .num { color: var(--mute); margin-right: 12px; }
+
+  /* === Intro + how-to === */
+  .intro {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 22px 24px;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+  .intro b { color: var(--ink); font-weight: 600; }
+  .intro ol, .intro ul { margin: 6px 0 0; padding-left: 22px; }
+  .intro li { margin-bottom: 4px; }
+
+  /* === Tasks === */
+  .task {
+    display: grid;
+    grid-template-columns: 80px 1fr 110px;
+    gap: 16px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    align-items: start;
+  }
+  .task .tag {
+    font-family: "SF Mono", monospace;
+    font-size: 10px;
+    background: var(--ink); color: var(--paper);
+    padding: 3px 8px; border-radius: 3px;
+    text-align: center;
+    letter-spacing: 0.06em;
+  }
+  .task .tag.easy { background: var(--ink-2); }
+  .task .tag.mid { background: var(--ink-2); }
+  .task .tag.hard { background: var(--ink); }
+  .task .ttl {
+    font-size: 14px; font-weight: 600;
+    line-height: 1.4;
+  }
+  .task .desc {
+    font-size: 12px; color: var(--ink-2);
+    margin-top: 6px;
+    line-height: 1.55;
+  }
+  .task .level {
+    font-family: "SF Mono", monospace;
+    font-size: 10px;
+    color: var(--mute);
+    text-align: right;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* === Severity rubric === */
+  .rubric {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .rubric .cell {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .rubric .cell .lvl {
+    font-family: "SF Mono", monospace;
+    font-weight: 700; font-size: 13px;
+    margin-bottom: 4px;
+    display: inline-block;
+    background: var(--ink); color: var(--paper);
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    text-align: center; line-height: 22px;
+  }
+  .rubric .cell .name { font-weight: 600; margin: 4px 0 2px; }
+  .rubric .cell .desc { color: var(--ink-2); }
+  .rubric .cell.lv0 .lvl { background: #DDD; color: var(--ink); }
+  .rubric .cell.lv1 .lvl { background: #BBB; }
+  .rubric .cell.lv2 .lvl { background: #999; }
+  .rubric .cell.lv3 .lvl { background: #555; }
+  .rubric .cell.lv4 .lvl { background: #000; }
+
+  /* === Heuristic blocks === */
+  .heuristic {
+    border: 1px solid var(--line);
+    background: var(--paper);
+    border-radius: 6px;
+    padding: 22px 24px 18px;
+    margin-bottom: 18px;
+    page-break-inside: avoid;
+  }
+  .heuristic h3 {
+    margin: 0 0 4px;
+    font-size: 17px; font-weight: 700;
+    display: flex; align-items: baseline; gap: 12px;
+    line-height: 1.3;
+  }
+  .heuristic h3 .h-num {
+    font-family: "SF Mono", monospace;
+    background: var(--ink); color: var(--paper);
+    font-size: 13px; font-weight: 700;
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .heuristic h3 .h-name-en {
+    color: var(--ink-2); font-weight: 500; font-size: 13px; margin-left: 6px;
+  }
+  .heuristic .h-def {
+    font-size: 12px; color: var(--ink-2);
+    border-left: 2px solid var(--line);
+    padding-left: 10px;
+    margin: 8px 0 16px 44px;
+    line-height: 1.55;
+  }
+
+  .q {
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 14px 16px;
+    margin-top: 12px;
+    background: var(--bg);
+  }
+  .q-head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-bottom: 6px;
+  }
+  .q-id {
+    font-family: "SF Mono", monospace;
+    font-size: 11px; font-weight: 700;
+    color: var(--paper); background: var(--ink);
+    padding: 2px 8px; border-radius: 3px;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .q-text {
+    font-size: 13px; font-weight: 600;
+    line-height: 1.5;
+  }
+  .q-where {
+    font-size: 11px;
+    color: var(--ink-2);
+    margin: 8px 0 0 0;
+    padding: 8px 10px;
+    background: var(--paper);
+    border-radius: 4px;
+    border: 1px dashed var(--line);
+    display: flex; flex-wrap: wrap; gap: 4px 12px;
+  }
+  .q-where b {
+    font-family: "SF Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mute);
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .q-score {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: auto repeat(5, 1fr);
+    gap: 4px;
+    font-family: "SF Mono", monospace;
+    font-size: 11px;
+  }
+  .q-score .label {
+    color: var(--mute);
+    align-self: center;
+    padding-right: 6px;
+    letter-spacing: 0.06em;
+  }
+  .q-score .box {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    text-align: center;
+    padding: 7px 4px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.1s;
+    font-weight: 600;
+  }
+  .q-score .box:hover { background: var(--ph); }
+  .q-score .box.checked {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .q-notes {
+    margin-top: 10px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 8px 10px;
+    min-height: 56px;
+    font-size: 11px;
+    color: var(--mute);
+    line-height: 1.6;
+  }
+  .q-notes::before {
+    content: '評估筆記 / NOTES';
+    display: block;
+    font-family: "SF Mono", monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--mute);
+    margin-bottom: 4px;
+  }
+  .q-notes:focus {
+    outline: 1px solid var(--ink);
+    color: var(--ink);
+  }
+
+  /* === Summary form at end === */
+  .summary {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    border-radius: 6px;
+    padding: 24px 26px;
+    margin-top: 24px;
+  }
+  .summary h3 {
+    margin: 0 0 12px;
+    font-size: 15px; font-weight: 700;
+  }
+  .summary .top3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .summary .top3 .slot {
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+    padding: 12px;
+    min-height: 90px;
+  }
+  .summary .top3 .slot .pos {
+    font-family: "SF Mono", monospace;
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+
+  /* === Footer === */
+  .foot {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-family: "SF Mono", monospace;
+    font-size: 10px;
+    color: var(--mute);
+    line-height: 1.7;
+    letter-spacing: 0.06em;
+  }
+
+  /* === Print === */
+  @media print {
+    body { background: white; }
+    .doc { max-width: 100%; padding: 24px 28px; }
+    .heuristic { page-break-inside: avoid; }
+    .q { page-break-inside: avoid; }
+    .q-score .box:hover { background: var(--paper); }
+  }
+
+  /* nav controls */
+  .toc {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 30px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    font-size: 12px;
+  }
+  .toc a {
+    color: var(--ink);
+    text-decoration: none;
+    padding: 8px 6px;
+    border-radius: 4px;
+    text-align: center;
+    border: 1px solid transparent;
+    display: flex; flex-direction: column; gap: 2px;
+    align-items: center;
+  }
+  .toc a:hover { background: var(--ph); border-color: var(--line); }
+  .toc a .num {
+    font-family: "SF Mono", monospace;
+    font-size: 10px;
+    background: var(--ink); color: var(--paper);
+    width: 18px; height: 18px;
+    border-radius: 3px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+  }
+  .toc a .name {
+    font-size: 11px;
+    line-height: 1.3;
+  }
+
+  @media print { .toc, .print-hint { display: none; } }
+
+  .print-hint {
+    position: fixed; bottom: 20px; right: 20px;
+    background: var(--ink); color: var(--paper);
+    border-radius: 99px;
+    padding: 8px 14px;
+    font-family: "SF Mono", monospace;
+    font-size: 11px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    cursor: pointer;
+    border: none;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="doc">
+
+  <!-- Cover -->
+  <div class="cover">
+    <p class="eyebrow">Heuristic Evaluation Checklist · Project 5</p>
+    <h1>存脆 ThreadMark<span class="en">尼爾森十原則評估清單</span></h1>
+    <p style="font-size:14px; color:var(--ink-2); margin:10px 0 0; line-height:1.65;">
+      請評估人員依以下清單，針對 Mid-Fi Prototype 進行評估。每題附對應畫面定位，幫助快速找到要看的地方；評分採 Nielsen 嚴重程度 0–4 分制。
+    </p>
+
+    <div class="cover-meta">
+      <div class="cell">
+        <div class="lbl">評估人員 EVALUATOR</div>
+        <div class="val">＿＿＿＿＿＿＿＿</div>
+      </div>
+      <div class="cell">
+        <div class="lbl">背景 BACKGROUND</div>
+        <div class="val">＿＿＿＿＿＿＿＿</div>
+      </div>
+      <div class="cell">
+        <div class="lbl">日期 DATE</div>
+        <div class="val">＿＿＿ / ＿＿ / ＿＿</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Intro -->
+  <div class="intro">
+    <b>產品簡介 · About 存脆 ThreadMark</b><br/>
+    一款 iOS 行動 App，把 Threads 上的「徵集串／推薦串／競賽串」變成個人知識庫。使用者透過分享選單把串文存入 App，加上自己的註解，分類到資料夾；資料夾內可以用 AI 自動歸納或對話問答，並把答案存成「卡片」回頭查閱。
+    <br/><br/>
+    <b>評估步驟 · How to use this checklist</b>
+    <ol>
+      <li>先看完下方 <b>3 個 Task</b>，了解使用者目標</li>
+      <li>實際操作 Mid-Fi Prototype 完成這 3 個 Task</li>
+      <li>逐題評估，每題：(a) 在 prototype 中找到對應位置 → (b) 圈選嚴重程度 0–4 → (c) 在 Notes 寫下你發現的具體問題</li>
+      <li>第一次評估：先看機制與流程；第二次評估：再看介面、文字、元件細節</li>
+      <li>除清單問題之外，自身發現的問題請寫在每題 Notes 或文末「其他發現」</li>
+    </ol>
+  </div>
+
+  <!-- Tasks -->
+  <h2 class="sec"><span class="num">01</span>三個評估 Task</h2>
+
+  <div class="task">
+    <div>
+      <span class="tag easy">EASY</span>
+    </div>
+    <div>
+      <div class="ttl">Task 1 · 把一則 Threads 推薦串存入 App，並分類到資料夾</div>
+      <div class="desc">情境：你在 Threads 看到一則「京都伴手禮推薦」徵集串，想之後出國前回頭看。請用 App 把它存下來，加上自己的註解，並讓它出現在你建立的「京都行」資料夾中。</div>
+    </div>
+    <div class="level">簡單</div>
+  </div>
+
+  <div class="task">
+    <div>
+      <span class="tag mid">MID</span>
+    </div>
+    <div>
+      <div class="ttl">Task 2 · 把同一則串文同時收進兩個資料夾，並設定明天提醒</div>
+      <div class="desc">情境：剛才那則京都伴手禮串文，你覺得它同時屬於「京都行」和「伴手禮」兩個主題，希望兩個資料夾都看得到。並請設定明天早上提醒你再看一次。</div>
+    </div>
+    <div class="level">中等</div>
+  </div>
+
+  <div class="task">
+    <div>
+      <span class="tag hard">HARD</span>
+    </div>
+    <div>
+      <div class="ttl">Task 3 · 用 AI 整理「家電購物」資料夾，並把答案存成卡片</div>
+      <div class="desc">情境：你在「家電購物」資料夾裡已經存了 12 則串文。你想知道「2 萬內掃地機誰最常被推薦」，並把 AI 給的答案存成卡片以後查。請至少嘗試 AI Summary 和 AI Chat 兩種方式。</div>
+    </div>
+    <div class="level">複雜</div>
+  </div>
+
+  <!-- Severity rubric -->
+  <h2 class="sec"><span class="num">02</span>嚴重程度評分標準</h2>
+  <div class="rubric">
+    <div class="cell lv0"><span class="lvl">0</span><div class="name">不算問題</div><div class="desc">不認為這是可用性問題</div></div>
+    <div class="cell lv1"><span class="lvl">1</span><div class="name">表面瑕疵</div><div class="desc">美觀問題，有空再修</div></div>
+    <div class="cell lv2"><span class="lvl">2</span><div class="name">輕微問題</div><div class="desc">低優先，會稍微卡使用者</div></div>
+    <div class="cell lv3"><span class="lvl">3</span><div class="name">主要問題</div><div class="desc">高優先，明顯影響體驗</div></div>
+    <div class="cell lv4"><span class="lvl">4</span><div class="name">災難</div><div class="desc">必須修，否則無法上線</div></div>
+  </div>
+
+  <!-- TOC -->
+  <h2 class="sec"><span class="num">03</span>十原則評估題目</h2>
+  <nav class="toc">
+    <a href="#h1"><span class="num">1</span><span class="name">可讀性</span></a>
+    <a href="#h2"><span class="num">2</span><span class="name">不脫離現實</span></a>
+    <a href="#h3"><span class="num">3</span><span class="name">操作自由</span></a>
+    <a href="#h4"><span class="num">4</span><span class="name">一致性</span></a>
+    <a href="#h5"><span class="num">5</span><span class="name">預防錯誤</span></a>
+    <a href="#h6"><span class="num">6</span><span class="name">減少記憶</span></a>
+    <a href="#h7"><span class="num">7</span><span class="name">操作有效率</span></a>
+    <a href="#h8"><span class="num">8</span><span class="name">易讀性</span></a>
+    <a href="#h9"><span class="num">9</span><span class="name">錯誤恢復</span></a>
+    <a href="#h10"><span class="num">10</span><span class="name">幫助說明</span></a>
+  </nav>
+
+  <!-- ============== H1 · Visibility of system status ============== -->
+  <div class="heuristic" id="h1">
+    <h3><span class="h-num">1</span><span>可讀性<span class="h-name-en">Visibility of system status</span></span></h3>
+    <p class="h-def">系統是否清楚告訴使用者「現在發生什麼、做了什麼、可以做什麼」。</p>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H1.1</span><span class="q-text">當使用者透過分享選單把串文存入存脆後，系統是否清楚回饋「已存到哪個資料夾」？</span></div>
+      <div class="q-where"><b>看這裡</b>Share Sheet 完成儲存 → 回到 Threads / App 是否有 toast、確認訊息或視覺回饋</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H1.2</span><span class="q-text">進入資料夾後，使用者是否清楚知道目前在哪個 sub-tab（Cards / AI / Source），以及這個 sub-tab 的內容性質？</span></div>
+      <div class="q-where"><b>看這裡</b>Folder 詳細頁的頂部 sub-tab 切換 · 各分頁標題與計數</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H1.3</span><span class="q-text">在 AI Chat 詢問問題時，使用者是否清楚知道「AI 正在做什麼」（讀取中、思考中、找到 N 個 source 等）？</span></div>
+      <div class="q-where"><b>看這裡</b>Folder · AI · Chat 模式 → 送出問題後的 loading / thinking 狀態</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+  </div>
+
+  <!-- ============== H2 · Match between system and real world ============== -->
+  <div class="heuristic" id="h2">
+    <h3><span class="h-num">2</span><span>不脫離現實<span class="h-name-en">Match between system & real world</span></span></h3>
+    <p class="h-def">系統用語、流程、隱喻是否符合一般使用者的日常理解。</p>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H2.1</span><span class="q-text">「資料夾」、「卡片」、「source」、「未整理」這些詞，對第一次使用者來說是否好懂、不需要猜測？</span></div>
+      <div class="q-where"><b>看這裡</b>首頁 folder 列表 / Folder 詳細頁的 sub-tab 名稱 / Share Sheet 中的欄位文案</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H2.2</span><span class="q-text">Folder 的 icon（如「電」、「食」、「貓」單字）是否能幫助使用者快速辨識主題？是否會誤導？</span></div>
+      <div class="q-where"><b>看這裡</b>首頁 folder grid · Folder header · Share Sheet 的 folder chip</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H2.3</span><span class="q-text">「AI 只讀本資料夾」這個概念，使用者能否從 UI 自行推測出來？還是需要被告知才懂？</span></div>
+      <div class="q-where"><b>看這裡</b>AI sub-tab 的 scope band「BASED ON 12 SAVED SOURCES · NOT WEB」相關文案、提示</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+  </div>
+
+  <!-- ============== H3 · User control and freedom ============== -->
+  <div class="heuristic" id="h3">
+    <h3><span class="h-num">3</span><span>使用者操作自由<span class="h-name-en">User control & freedom</span></span></h3>
+    <p class="h-def">使用者能否安心地取消、撤銷、改變決定。</p>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H3.1</span><span class="q-text">在 Share Sheet 儲存到一半，使用者能否取消而不留下殘留資料？路徑是否明顯？</span></div>
+      <div class="q-where"><b>看這裡</b>Share Sheet 左上 ✕ / 「取消」按鈕 / 下滑關閉手勢</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H3.2</span><span class="q-text">使用者把串文存錯資料夾後，能否輕鬆地搬移到其他資料夾、或同時加入更多資料夾？</span></div>
+      <div class="q-where"><b>看這裡</b>Folder · Source sub-tab 中每則串文下方的 folder chip · 「＋ 加入資料夾」按鈕</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H3.3</span><span class="q-text">AI 自動建議的卡片，使用者能否輕鬆拒絕／略過，或將略過的恢復回來？</span></div>
+      <div class="q-where"><b>看這裡</b>Folder · AI · Summary 模式的「＋ 存成卡片 / 略過」按鈕 · 略過後的狀態回復</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+  </div>
+
+  <!-- ============== H4 · Consistency ============== -->
+  <div class="heuristic" id="h4">
+    <h3><span class="h-num">4</span><span>一致性<span class="h-name-en">Consistency & standards</span></span></h3>
+    <p class="h-def">系統內部與外部（iOS 慣例）的視覺、用語、操作是否一致。</p>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H4.1</span><span class="q-text">Cards / AI / Source 三個 sub-tab 的視覺風格、間距、字級、卡片設計是否保持一致？</span></div>
+      <div class="q-where"><b>看這裡</b>同一 folder 內三個 sub-tab 切換比較 · 卡片元件樣式</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H4.2</span><span class="q-text">「＋ 存成卡片」這個動作在 AI Summary 與 AI Chat 兩個地方，行為與外觀是否一致？</span></div>
+      <div class="q-where"><b>看這裡</b>Folder · AI · Summary 卡片 vs Chat 訊息下方的存卡按鈕</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H4.3</span><span class="q-text">App 整體是否符合 iOS 設計慣例（底部 tab bar 位置、← 返回、segmented control、share sheet 樣式）？</span></div>
+      <div class="q-where"><b>看這裡</b>底部主 tab bar · navbar 返回按鈕 · AI segment 切換 · Share Sheet</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+  </div>
+
+  <!-- ============== H5 · Error strategy ============== -->
+  <div class="heuristic" id="h5">
+    <h3><span class="h-num">5</span><span>預防使用者出錯<span class="h-name-en">Error prevention</span></span></h3>
+    <p class="h-def">系統是否在使用者出錯前主動防止、警告、提示。</p>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H5.1</span><span class="q-text">使用者在 Share Sheet 沒選任何資料夾就按儲存時，系統是否有清楚提示「將會存入未整理」？</span></div>
+      <div class="q-where"><b>看這裡</b>Share Sheet 中 folder chip 區下方的 fallback 提示文字</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H5.2</span><span class="q-text">使用者刪除一個資料夾時，系統是否明確告知「資料夾內的 N 則串文會回到未整理」？是否需要二次確認？</span></div>
+      <div class="q-where"><b>看這裡</b>首頁 folder 編輯模式 · 刪除 folder 的確認對話框</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+  </div>
+
+  <!-- ============== H6 · Recognition ============== -->
+  <div class="heuristic" id="h6">
+    <h3><span class="h-num">6</span><span>減少使用者認知負擔<span class="h-name-en">Recognition rather than recall</span></span></h3>
+    <p class="h-def">系統是否讓使用者「看到就知道」，而非要靠記憶。</p>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H6.1</span><span class="q-text">在 Cards 頁中，AI 自動產生的「⌘ AI 洞見」與使用者手寫的「📝 我的 memo」是否一眼可以區分？</span></div>
+      <div class="q-where"><b>看這裡</b>Folder · Cards sub-tab 的兩種卡片並列</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H6.2</span><span class="q-text">使用者要找一則之前存過的串文時，是否需要記住「當時存到哪個資料夾」？還是有不靠記憶就能找回來的方法？</span></div>
+      <div class="q-where"><b>看這裡</b>底部 tab · 搜尋功能 · Inbox 提醒 · 命中來源 filter</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H6.3</span><span class="q-text">在 Source sub-tab 看一則串文時，是否能一眼看出它「同時屬於哪些資料夾」？</span></div>
+      <div class="q-where"><b>看這裡</b>Folder · Source sub-tab · 每則串文下方的 folder chip 列</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+  </div>
+
+  <!-- ============== H7 · Flexibility & efficiency ============== -->
+  <div class="heuristic" id="h7">
+    <h3><span class="h-num">7</span><span>操作有效率<span class="h-name-en">Flexibility & efficiency of use</span></span></h3>
+    <p class="h-def">系統是否同時照顧新手與熟手，提供有效率的捷徑。</p>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H7.1</span><span class="q-text">想把同一則串文加入「多個」資料夾，操作是否流暢、需要的步驟是否合理？</span></div>
+      <div class="q-where"><b>看這裡</b>Share Sheet 的 folder 多選 chip · 已存後在 Source sub-tab 再加 folder</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H7.2</span><span class="q-text">熟手使用者是否有捷徑可用？（例：常用資料夾優先顯示、suggested prompts、預設提醒時間等）</span></div>
+      <div class="q-where"><b>看這裡</b>Share Sheet 的提醒 chip · AI Chat 的 suggested prompts · ME 的預設提醒設定</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+  </div>
+
+  <!-- ============== H8 · Aesthetics ============== -->
+  <div class="heuristic" id="h8">
+    <h3><span class="h-num">8</span><span>易讀性 / 美感<span class="h-name-en">Aesthetics & minimalist design</span></span></h3>
+    <p class="h-def">介面是否清晰、密度適當、視覺呼吸感足夠。</p>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H8.1</span><span class="q-text">首頁 folder grid 的資訊密度與排版是否清楚？資料夾數量增加時是否仍易讀？</span></div>
+      <div class="q-where"><b>看這裡</b>首頁 · folder grid · 統計區塊 · 「未整理」永遠置頂的視覺處理</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H8.2</span><span class="q-text">Share Sheet 中包含註解、folder 多選、提醒時間等多個欄位，畫面是否擁擠或有資訊過載？</span></div>
+      <div class="q-where"><b>看這裡</b>Share Sheet 完整展開狀態 · 各欄位的視覺權重與間距</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H8.3</span><span class="q-text">AI 回應卡片的資訊組成（洞見＋來源引用＋原串連結＋動作按鈕）是否層次清楚？有無多餘或缺少的元素？</span></div>
+      <div class="q-where"><b>看這裡</b>Folder · AI · Summary / Chat 中的 AI 卡片完整內容</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+  </div>
+
+  <!-- ============== H9 · Error recovery ============== -->
+  <div class="heuristic" id="h9">
+    <h3><span class="h-num">9</span><span>協助使用者從錯誤中恢復<span class="h-name-en">Recognize, diagnose, recover</span></span></h3>
+    <p class="h-def">錯誤訊息是否說人話、指出原因、給出可行的下一步。</p>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H9.1</span><span class="q-text">當 AI 在資料夾中找不到相關內容時，系統是否誠實告知，並提供具體的下一步（例：去搜尋、去 Threads 補資料）？</span></div>
+      <div class="q-where"><b>看這裡</b>Folder · AI · Chat 中針對資料夾未涵蓋主題的提問回應</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H9.2</span><span class="q-text">使用者在搜尋時無結果，系統是否提供可恢復的路徑（建議用語、變更搜尋範圍、近期搜尋等）？</span></div>
+      <div class="q-where"><b>看這裡</b>搜尋 tab · 輸入無結果時的回饋</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H9.3</span><span class="q-text">當使用者誤刪資料夾或誤把串文移到「未整理」時，是否有撤銷（undo）或恢復機制？</span></div>
+      <div class="q-where"><b>看這裡</b>刪除 folder 後的 toast · Source sub-tab 移除最後一個 folder chip 後</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+  </div>
+
+  <!-- ============== H10 · Help & documentation ============== -->
+  <div class="heuristic" id="h10">
+    <h3><span class="h-num">10</span><span>幫助提示與說明<span class="h-name-en">Help & documentation</span></span></h3>
+    <p class="h-def">當使用者需要協助時，是否能快速取得且能用。</p>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H10.1</span><span class="q-text">第一次使用 Share Sheet、AI、Source sub-tab 等核心功能時，是否有 onboarding / tooltip / 範例引導？</span></div>
+      <div class="q-where"><b>看這裡</b>Onboarding 頁面 · 各核心功能的首次進入體驗</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+
+    <div class="q">
+      <div class="q-head"><span class="q-id">H10.2</span><span class="q-text">當使用者卡住時，是否能在 App 內找到說明（FAQ、聯絡支援、教學）？路徑是否明顯？</span></div>
+      <div class="q-where"><b>看這裡</b>ME tab / Settings · 是否有「幫助」「教學」「FAQ」入口</div>
+      <div class="q-score">
+        <span class="label">嚴重度</span>
+        <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
+        <div class="box" data-score="2">2</div><div class="box" data-score="3">3</div><div class="box" data-score="4">4</div>
+      </div>
+      <div class="q-notes" contenteditable="true"></div>
+    </div>
+  </div>
+
+  <!-- =================== Summary form =================== -->
+  <h2 class="sec"><span class="num">04</span>評估總結</h2>
+  <div class="summary">
+    <h3>三大最嚴重問題（請依嚴重度由高到低填寫）</h3>
+    <div class="top3">
+      <div class="slot">
+        <div class="pos">#1 · MOST SEVERE</div>
+        <div contenteditable="true" style="min-height:60px; font-size:12px; color:var(--ink);"></div>
+      </div>
+      <div class="slot">
+        <div class="pos">#2</div>
+        <div contenteditable="true" style="min-height:60px; font-size:12px; color:var(--ink);"></div>
+      </div>
+      <div class="slot">
+        <div class="pos">#3</div>
+        <div contenteditable="true" style="min-height:60px; font-size:12px; color:var(--ink);"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary" style="margin-top:14px;">
+    <h3>其他發現 · 未涵蓋於上述清單的問題</h3>
+    <div contenteditable="true" style="min-height:120px; font-size:12px; color:var(--ink); border:1px dashed var(--line); border-radius:4px; padding:12px;"></div>
+  </div>
+
+  <div class="summary" style="margin-top:14px;">
+    <h3>整體建議</h3>
+    <div contenteditable="true" style="min-height:80px; font-size:12px; color:var(--ink); border:1px dashed var(--line); border-radius:4px; padding:12px;"></div>
+  </div>
+
+  <p class="foot">
+    NIELSEN HEURISTIC EVALUATION CHECKLIST · 存脆 ThreadMark v2 · 27 ITEMS ACROSS 10 PRINCIPLES<br/>
+    REF · NIELSEN NORMAN GROUP, 10 USABILITY HEURISTICS · 客製化版本 by Group 1
+  </p>
+
+</div>
+
+<button class="print-hint" onclick="window.print()">⎙ 列印 / 存 PDF</button>
+
+<script>
+  // Severity score toggle
+  document.querySelectorAll('.q-score').forEach(scoreGroup => {
+    scoreGroup.querySelectorAll('.box').forEach(box => {
+      box.addEventListener('click', () => {
+        scoreGroup.querySelectorAll('.box').forEach(b => b.classList.remove('checked'));
+        box.classList.add('checked');
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
