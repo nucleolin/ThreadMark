@@ -62,6 +62,39 @@
     color: var(--mute); margin-bottom: 4px;
   }
   .cover-meta .val { color: var(--ink); font-weight: 500; }
+  .cover-meta .val[contenteditable] {
+    min-height: 22px;
+    outline: none;
+    border-bottom: 1px dashed var(--line);
+    padding: 2px 0;
+    cursor: text;
+  }
+  .cover-meta .val[contenteditable]:empty::before {
+    content: attr(data-placeholder);
+    color: var(--mute);
+    font-weight: 400;
+    pointer-events: none;
+  }
+  .cover-meta .val[contenteditable]:focus {
+    border-bottom-color: var(--ink);
+  }
+  .cover-meta input.val[type="date"] {
+    border: none;
+    border-bottom: 1px dashed var(--line);
+    background: transparent;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    padding: 2px 0;
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+    display: block;
+  }
+  .cover-meta input.val[type="date"]:focus {
+    border-bottom-color: var(--ink);
+  }
 
   /* === Section heads === */
   h2.sec {
@@ -399,6 +432,25 @@
     border: none;
   }
 
+  /* === TBD: wireframe not yet designed === */
+  .q.tbd {
+    border-style: dashed;
+    opacity: 0.65;
+  }
+  .q.tbd::before {
+    content: 'WIREFRAME 尚未設計 · 暫緩評估';
+    display: block;
+    font-family: "SF Mono", monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--paper);
+    background: var(--mute);
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    width: fit-content;
+  }
+
 </style>
 </head>
 <body>
@@ -416,15 +468,15 @@
     <div class="cover-meta">
       <div class="cell">
         <div class="lbl">評估人員 EVALUATOR</div>
-        <div class="val">＿＿＿＿＿＿＿＿</div>
+        <div class="val" contenteditable="true" data-placeholder="請填寫姓名"></div>
       </div>
       <div class="cell">
         <div class="lbl">背景 BACKGROUND</div>
-        <div class="val">＿＿＿＿＿＿＿＿</div>
+        <div class="val" contenteditable="true" data-placeholder="設計師、PM、研究員⋯"></div>
       </div>
       <div class="cell">
         <div class="lbl">日期 DATE</div>
-        <div class="val">＿＿＿ / ＿＿ / ＿＿</div>
+        <input class="val" type="date">
       </div>
     </div>
   </div>
@@ -453,7 +505,7 @@
     </div>
     <div>
       <div class="ttl">Task 1 · 把一則 Threads 推薦串存入 App，並分類到資料夾</div>
-      <div class="desc">情境：你在 Threads 看到一則「日本伴手禮推薦」徵集串，想之後出國前回頭看。請用 App 把它存下來，加上自己的註解，並讓它出現在你建立的「日本旅遊」資料夾中。</div>
+      <div class="desc">情境：你在 Threads 看到一則「日本家電購買推薦」徵集串，想之後出國前回頭看。請用 App 把它存下來，加上自己的註解，並讓它出現在你建立的「日本旅遊」資料夾中。</div>
     </div>
     <div class="level">簡單</div>
   </div>
@@ -463,8 +515,8 @@
       <span class="tag mid">MID</span>
     </div>
     <div>
-      <div class="ttl">Task 2 · 把同一則串文同時收進兩個資料夾，並設定明天提醒</div>
-      <div class="desc">情境：剛才那則日本伴手禮串文，你覺得它同時屬於「日本旅遊」和「家電購物」兩個主題，希望兩個資料夾都看得到。並請設定明天早上提醒你再看一次。</div>
+      <div class="ttl">Task 2 · 把同一則串文同時收進兩個資料夾，並設定今晚提醒</div>
+      <div class="desc">情境：剛才那則日本家電購買推薦串文，你覺得它同時屬於「日本旅遊」和「家電購物」兩個主題，希望兩個資料夾都看得到。並請設定今晚8:00提醒你再看一次。</div>
     </div>
     <div class="level">中等</div>
   </div>
@@ -475,7 +527,7 @@
     </div>
     <div>
       <div class="ttl">Task 3 · 用 AI 整理「家電購物」資料夾，並把答案存成卡片</div>
-      <div class="desc">情境：你在「家電購物」資料夾裡已經存了 12 則串文。你想知道「2 萬內掃地機誰最常被推薦」，並把 AI 給的答案存成卡片以後查。請至少嘗試 AI Summary 和 AI Chat 兩種方式。</div>
+      <div class="desc">情境：你在「家電購物」資料夾裡已經存了 12 則串文。你想知道「2 萬內掃地機誰最常被推薦」，並把 AI 給的答案存成卡片以後查。請嘗試 AI Chat 。</div>
     </div>
     <div class="level">複雜</div>
   </div>
@@ -561,7 +613,7 @@
     </div>
 
     <div class="q">
-      <div class="q-head"><span class="q-id">H2.2</span><span class="q-text">Folder 的 icon（如「電」、「食」、「貓」單字）是否能幫助使用者快速辨識主題？是否會誤導？</span></div>
+      <div class="q-head"><span class="q-id">H2.2</span><span class="q-text">Folder 的 icon（資料夾圖示）是否能幫助使用者快速辨識主題？是否會誤導？</span></div>
       <div class="q-where"><b>看這裡</b>首頁 folder grid · Folder header · Share Sheet 的 folder chip</div>
       <div class="q-score">
         <span class="label">嚴重度</span>
@@ -573,7 +625,7 @@
 
     <div class="q">
       <div class="q-head"><span class="q-id">H2.3</span><span class="q-text">「AI 只讀本資料夾」這個概念，使用者能否從 UI 自行推測出來？還是需要被告知才懂？</span></div>
-      <div class="q-where"><b>看這裡</b>AI sub-tab 的 scope band「BASED ON 12 SAVED SOURCES · NOT WEB」相關文案、提示</div>
+      <div class="q-where"><b>看這裡</b>AI sub-tab 的 scope band「BASED ON 12 SAVED SOURCES」相關文案、提示</div>
       <div class="q-score">
         <span class="label">嚴重度</span>
         <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
@@ -590,7 +642,7 @@
 
     <div class="q">
       <div class="q-head"><span class="q-id">H3.1</span><span class="q-text">在 Share Sheet 儲存到一半，使用者能否取消而不留下殘留資料？路徑是否明顯？</span></div>
-      <div class="q-where"><b>看這裡</b>Share Sheet 左上 ✕ / 「取消」按鈕 / 下滑關閉手勢</div>
+      <div class="q-where"><b>看這裡</b>Share Sheet 左上 ✕</div>
       <div class="q-score">
         <span class="label">嚴重度</span>
         <div class="box" data-score="0">0</div><div class="box" data-score="1">1</div>
@@ -610,7 +662,7 @@
       <div class="q-notes" contenteditable="true"></div>
     </div>
 
-    <div class="q">
+    <div class="q tbd">
       <div class="q-head"><span class="q-id">H3.3</span><span class="q-text">AI 自動建議的卡片，使用者能否輕鬆拒絕／略過，或將略過的恢復回來？</span></div>
       <div class="q-where"><b>看這裡</b>Folder · AI · Summary 模式的「＋ 存成卡片 / 略過」按鈕 · 略過後的狀態回復</div>
       <div class="q-score">
@@ -677,7 +729,7 @@
       <div class="q-notes" contenteditable="true"></div>
     </div>
 
-    <div class="q">
+    <div class="q tbd">
       <div class="q-head"><span class="q-id">H5.2</span><span class="q-text">使用者刪除一個資料夾時，系統是否明確告知「資料夾內的 N 則串文會回到未整理」？是否需要二次確認？</span></div>
       <div class="q-where"><b>看這裡</b>首頁 folder 編輯模式 · 刪除 folder 的確認對話框</div>
       <div class="q-score">
@@ -744,7 +796,7 @@
       <div class="q-notes" contenteditable="true"></div>
     </div>
 
-    <div class="q">
+    <div class="q tbd">
       <div class="q-head"><span class="q-id">H7.2</span><span class="q-text">熟手使用者是否有捷徑可用？（例：常用資料夾優先顯示、suggested prompts、預設提醒時間等）</span></div>
       <div class="q-where"><b>看這裡</b>Share Sheet 的提醒 chip · AI Chat 的 suggested prompts · ME 的預設提醒設定</div>
       <div class="q-score">
@@ -800,7 +852,7 @@
     <h3><span class="h-num">9</span><span>協助使用者從錯誤中恢復<span class="h-name-en">Recognize, diagnose, recover</span></span></h3>
     <p class="h-def">錯誤訊息是否說人話、指出原因、給出可行的下一步。</p>
 
-    <div class="q">
+    <div class="q tbd">
       <div class="q-head"><span class="q-id">H9.1</span><span class="q-text">當 AI 在資料夾中找不到相關內容時，系統是否誠實告知，並提供具體的下一步（例：去搜尋、去 Threads 補資料）？</span></div>
       <div class="q-where"><b>看這裡</b>Folder · AI · Chat 中針對資料夾未涵蓋主題的提問回應</div>
       <div class="q-score">
@@ -811,7 +863,7 @@
       <div class="q-notes" contenteditable="true"></div>
     </div>
 
-    <div class="q">
+    <div class="q tbd">
       <div class="q-head"><span class="q-id">H9.2</span><span class="q-text">使用者在搜尋時無結果，系統是否提供可恢復的路徑（建議用語、變更搜尋範圍、近期搜尋等）？</span></div>
       <div class="q-where"><b>看這裡</b>搜尋 tab · 輸入無結果時的回饋</div>
       <div class="q-score">
@@ -822,7 +874,7 @@
       <div class="q-notes" contenteditable="true"></div>
     </div>
 
-    <div class="q">
+    <div class="q tbd">
       <div class="q-head"><span class="q-id">H9.3</span><span class="q-text">當使用者誤刪資料夾或誤把串文移到「未整理」時，是否有撤銷（undo）或恢復機制？</span></div>
       <div class="q-where"><b>看這裡</b>刪除 folder 後的 toast · Source sub-tab 移除最後一個 folder chip 後</div>
       <div class="q-score">
@@ -839,7 +891,7 @@
     <h3><span class="h-num">10</span><span>幫助提示與說明<span class="h-name-en">Help & documentation</span></span></h3>
     <p class="h-def">當使用者需要協助時，是否能快速取得且能用。</p>
 
-    <div class="q">
+    <div class="q tbd">
       <div class="q-head"><span class="q-id">H10.1</span><span class="q-text">第一次使用 Share Sheet、AI、Source sub-tab 等核心功能時，是否有 onboarding / tooltip / 範例引導？</span></div>
       <div class="q-where"><b>看這裡</b>Onboarding 頁面 · 各核心功能的首次進入體驗</div>
       <div class="q-score">
@@ -850,7 +902,7 @@
       <div class="q-notes" contenteditable="true"></div>
     </div>
 
-    <div class="q">
+    <div class="q tbd">
       <div class="q-head"><span class="q-id">H10.2</span><span class="q-text">當使用者卡住時，是否能在 App 內找到說明（FAQ、聯絡支援、教學）？路徑是否明顯？</span></div>
       <div class="q-where"><b>看這裡</b>ME tab / Settings · 是否有「幫助」「教學」「FAQ」入口</div>
       <div class="q-score">
